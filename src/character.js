@@ -2,15 +2,20 @@ import { checkStatus } from "./antiquesData.js";
 
 const characterRole = [
   {
+    //Done!?
     //Protagonist: Hv Skill, no disable, can be attack
     role_id: 0,
     player_id: -1,
     name: "Protaganist",
-    skill: function (G, ctx, targetPlayerID) {},
+    skill: function (G, ctx, targetID) {
+      console.log("Protagonist Skill Called");
+      return checkStatus(targetID);
+    },
     attacked_flag: false,
     protected_flag: false
   },
   {
+    //Done!?
     //Protagonist: Hv Skill, no check (checkdisalbe = true), can be attack
     role_id: 1,
     player_id: -1,
