@@ -1,9 +1,10 @@
-import { Client } from 'boardgame.io/react';
-import { AntiqueGame } from './Game';
+import React from "react";
+import { Client } from "boardgame.io/react";
+import { AntiqueGame } from "./Game";
 
 const App = Client({
   game: AntiqueGame,
-  numPlayer: 8
+  numPlayers: 8
 });
 
 export default App;
