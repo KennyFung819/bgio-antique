@@ -1,5 +1,6 @@
 import { checkStatus } from "./antiquesData.js";
 
+// 0-Protagonist, 1- Bodyguard, 2-Overseer, 3&4 - Normal, 5- Antagonist, 6- Hitman, 7- Undercover
 const characterRole = [
   {
     //Done!?
@@ -16,7 +17,7 @@ const characterRole = [
   },
   {
     //Done!?
-    //Protagonist: Hv Skill, no check (checkdisalbe = true), can be attack
+    //Bodyguard: Hv Skill, no check (checkdisalbe = true), can be attack
     role_id: 1,
     player_id: -1,
     name: "Bodyguard",
@@ -74,7 +75,16 @@ const characterRole = [
     role_id: 6,
     player_id: -1,
     name: "Hitman",
-    //skill: SkillHitman,
+    skill: function (G, ctx, targetPlayerID) {
+      console.log("Attack Skill Called");
+      const characters = G.playerRole;
+      console.log("const created");
+      let role_id = GetRoleByPlayer(characters, targetPlayerID);
+      console.log("Role id: " + role_id);
+      characters[role_id].attacked_flag = true;
+      G.playerRole = characters;
+      return G;
+    },
     attacked_flag: false,
     protected_flag: false
   },
@@ -113,9 +123,9 @@ function ShufflePlayer(charcterRole, n) {
   return shuffledPlayer;
 }
 
-function SetPlayerToRole(role_id, player_id) {
+/*function SetPlayerToRole(role_id, player_id) {
   characterRole[role_id].player_id = player_id;
-}
+}*/
 
 function GetPlayerByRole(role_id) {
   characterRole.forEach((character) => {
@@ -134,23 +144,3 @@ function GetRoleByPlayer(characters, player_id) {
 }
 
 export const shuffledCharacterRole = ShufflePlayer(characterRole, 8);
-
-/*
-function SkillProtagonist(G, ctx, AntiqueId) {
-  return checkStatus(G, ctx, AntiqueId);
-}
-
-function SkillOverseer() {}
-
-function SkillAntagonist(G, ctx, targetPlayerID) {}
-
-function SkillHitman(G, ctx, targetPlayerID) {
-  characterRole.forEach((character) => {
-    if (character.player_id === targetPlayerID) {
-      character.attacked_flag = true;
-    }
-  });
-}
-
-function SkillUnderCover() {}
-*/
