@@ -1,8 +1,6 @@
 import { antiquesData } from "./antiquesData.js";
 import { checkStatus } from "./antiquesData.js";
 import { shuffledCharacterRole } from "./character.js";
-import { TurnOrder } from "boardgame.io/core";
-import { waitForElementToBeRemoved } from "@testing-library/react";
 
 /*
 function SetAntique(antiquesData){
@@ -15,12 +13,21 @@ function GetAntique(){
 */
 let antiqueIndex = Array(12);
 let numRounds = 1;
-let turnPlayed = Array(8);
 
 function endMove(G, ctx, pid) {
-  if (!turnPlayed.includes(pid)) {
-    ctx.events.endTurn({ next: pid });
-  } else endMove(G, ctx, pid);
+  console.log(pid);
+  if (pid >= 0 && pid < ctx.numPlayers) {
+    console.log("b4 logic");
+
+    if (!G.turnPlayed.includes(pid)) {
+      G.turnPlayed.push(pid);
+      console.log("b4 endTurn");
+      ctx.events.endTurn({ next: pid.toString() });
+      console.log("After Endturn");
+    } else {
+      console.log("Played the turn already");
+    }
+  } else return console.log("Please input vaild number");
 }
 
 function turnCheckStatus(G, ctx, id) {
@@ -55,9 +62,6 @@ function personalSkill(G, ctx, playerID, skillTarget) {
       case 6:
       case 7:
       case 8:
-      case 9:
-      case 10:
-      case 11:
         break;
       default:
         console.log("ERORR");
@@ -79,7 +83,8 @@ export const AntiqueGame = {
     },
     currentFourAntique: Array(4).fill(0),
     token: Array(ctx.numPlayers).fill(6),
-    bidden: Array(0)
+    bidded: Array(0),
+    turnPlayed: Array(0)
   }),
 
   phases: {
@@ -117,7 +122,19 @@ export const AntiqueGame = {
 
     checkPhases: {
       moves: { PlayCard, turnCheckStatus, personalSkill, endMove },
-      next: "BuyPhase"
+      next: "buyPhase",
+      endIf: (G, ctx) => ctx.turn === 8,
+      turn: {
+        order: {
+          first: (G, ctx) => {
+            let rand = ctx.random.Die(8) - 1;
+            G.turnPlayed.push(rand);
+            console.log("Setup :" + G.turnPlayed);
+            return rand;
+          }
+          //playOrder: (G, ctx) => [-1]
+        }
+      }
     },
 
     buyPhase: {
@@ -160,29 +177,17 @@ export const AntiqueGame = {
           }
         }
       },
-
-      /*turn: {
-        activePlayers: { all: "biddingStage" },
-        stages: {
-          biddingStage: {
-            moves: {
-              function(G, ctx) {
-                let minBid = 0;
-                let maxBid = 2*numRounds;
-
-              }
-            }
-          }
-        }
-      }
-      ,*/
-
-      endIf: (G, ctx) => {
-        return { next: G.bidded.length === 6 ? "setFourIndex" : "votePhase" };
-      },
+      endIf: (G, ctx) => G.bidded.length === numRounds * 2,
 
       onEnd: (G, ctx) => {
+        G.turnPlayed.length = 0;
         G.currentFourAntique = Array(4).fill(0);
+      }
+    },
+
+    roundController: {
+      endIf: (G, ctx) => {
+        return { next: G.bidded.length === 6 ? "setFourIndex" : "votePhase" };
       }
     },
 
