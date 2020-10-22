@@ -67,7 +67,9 @@ const characterRole = [
     role_id: 5,
     player_id: -1,
     name: "Antagonist",
-    //skill: SkillAntagonist,
+    skill: function (G, ctx, flipping) {
+      G.checkStatus.flipped = "true";
+    },
     attacked_flag: false,
     protected_flag: false
   },

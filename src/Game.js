@@ -54,19 +54,31 @@ function personalSkill(G, ctx, playerID, skillTarget) {
     //update the skill inf
     switch (currentPlayer) {
       case 0:
+        //second Check
+        G.playerRole[person].skill(skillTarget);
+        break;
       case 1:
+      case 6:
+        //attack/defend
+        G = G.playerRole[person].skill(G, ctx, skillTarget);
+
+        break;
+
+      case 5:
+        //flip
+        if (skillTarget === true) {
+          G = G.playerRole[person].skill(G, ctx, skillTarget);
+        }
+        break;
       case 2:
       case 3:
       case 4:
-      case 5:
-      case 6:
       case 7:
-      case 8:
+        console.log("No Skill");
         break;
       default:
         console.log("ERORR");
     }
-    G = G.playerRole[person].skill(G, ctx, skillTarget);
   }
 }
 
@@ -93,6 +105,7 @@ export const AntiqueGame = {
         let fourAntique = Array(4);
         let twoTrue = 0;
         let twoFalse = 0;
+
         while (twoFalse !== 2 && twoTrue !== 2) {
           let randomID = ctx.random.D12();
           let antiqueStatus = checkStatus(randomID);
