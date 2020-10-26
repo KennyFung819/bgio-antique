@@ -75,7 +75,11 @@ function rollRandom() {
 }
 
 export function checkStatus(G, ctx, id) {
-  let currentPlayer = G.player[ctx.currentPlayer];
+  console.log("3");
+
+  let currentPlayer = G.playerRole[ctx.currentPlayer];
+  console.log("2");
+
   if (
     currentPlayer.attacked_flag === true &&
     currentPlayer.protectedFlag === false
